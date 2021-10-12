@@ -8,7 +8,8 @@ In particular:
 - There is only one application. It is defined under `application/`
 - Environment-specific application configuration should be defined in `application/overlays/(environment name)`
     - For example, environment variables that are set only in production, or only in development.
-- Otherwise this repository user the standard kustomize `base`/`overlays` pattern, where `base` contain resource defitions, and `overlays` contain patches against those resource definitions.
+    - Resources (ConfigMaps, etc) that are defined only in staging, or only in production.
+- Otherwise this repository uses the standard kustomize `base`/`overlays` pattern, where `base` contain resource defitions, and `overlays` contain patches against those resource definitions.
 
 **Q**: Do we need (micro)services as well? As in, an Application is composed of 1 or more services?
 
