@@ -1,12 +1,12 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: service-b
+  name: component-a
 spec:
-  subdomain: service-b
+  subdomain: component-a
   to:
     kind: Service
-    name: service-b
+    name: component-a
     weight: 100
   port:
     targetPort: 8080

@@ -9,10 +9,10 @@ patches:
       path: /spec/template/spec/containers/0/env/0
       value:
         name: RESOURCE_ENVIRONMENT
-        value: dev
+        value: staging
   target:
     kind: Deployment
-    name: service-a
+    name: component-a
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization

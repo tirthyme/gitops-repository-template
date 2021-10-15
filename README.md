@@ -1,31 +1,30 @@
 # GitOps Repository Template
 
-This is an example of what the AppStudio GitOps repository might look like for a simple application. This example contains two services ('service A' and 'service B'), and two environments ('dev' and 'staging').
+This is an example of what the AppStudio GitOps repository might look like for a simple application. This example contains two components ('component A' and 'component B'), and two environments ('dev' and 'staging').
 
 In particular:
 - New environments should be added and removed from `environments/overlays/(environment name)`
     - K8s resources (ConfigMaps/etc) that are defined within all environment should be included in `environments/base`
     - Environments can also contain environment-specific K8s resources: they should be defined in the environment's overlay
-- The GitOps repository can contain multiple services (for example, the 'frontend' and 'backend' of a single application. Others might refer to these as 'components'. Final terminology TBD)
-- Environment-specific service configuration should be defined in `services/(service name)/overlays/(environment name)`
-    - For example, environment variables that are set only in production, or only in development. (eg different database credentials for different environments)
+- The GitOps repository can contain multiple components (for example, the 'frontend' and 'backend' of a single application.)
+- Environment-specific component configuration should be defined in `component/(component name)/overlays/(environment name)`
+    - For example, environment variables of the component that are set only in production, or only in development (eg different database credentials for different environments)
 - Otherwise this repository uses the standard kustomize `base`/`overlays` pattern, where `base` contain resource definitions, and `overlays` contain patches against those resource definitions (which eliminates the need to duplicate data across multiple resources)
 
 ## Resources
 
 There are two types of resources defined in this repository:
-- **Services**: 
-    - A service contains one or more Kubernetes resources (Deployments/ConfigMaps/etc), representing a component of an application to deploy.
-    - For example, the 'frontend' and 'backend' of a single application (both would be services, here)
-    - (Others might refer to 'services' as 'components', final terminology TBD)
-    - Service resources may be customized (by kustomize) based on the environment they are targeting, for example, different environment variables in staging/production containing different database service credentials.
+- **Components**: 
+    - A component contains one or more Kubernetes resources (Deployments/ConfigMaps/etc), representing a component of an application to deploy.
+    - For example, the 'frontend' and 'backend' of a single application (both would be components, here)
+    - Component resources may be customized (by kustomize) based on the environment they are targeting, for example, different environment variables in staging/production containing different database service credentials.
 
 - **Environments**
-    - Services are deployed within environments.
-    - Environments contain the list of services that are to be deployed to them. See `environments/overlays/(environment name)/kustomization.yaml` for the list of services that are to be included in a particular environment.
-        - For example, if 'serviceA' and 'serviceB' are to be deployed to environment 'dev', then 'serviceA' and 'serviceB' should be referenced via in `environments/overlays/dev/kustomization.yaml`
-        - In a similar fashion, it is easy to support deploying only a subset of services to an environment. For example, only 'serviceA' or 'serviceB'.
-    - An environment may also contain zero or more Kubernetes resources (eg Deployments/ConfigMaps/etc) that should be deployed within a particular environment. (These would be resources that are not tied to a specific service, but still need to be present. For example, a `ResourceQuota` in a namespace)
+    - Components are deployed within environments.
+    - Environments contain the list of components that are to be deployed to them. See `environments/overlays/(environment name)/kustomization.yaml` for the list of components that are to be included in a particular environment.
+        - For example, if 'componentA' and 'componentB' are to be deployed to environment 'dev', then 'componentA' and 'componentB' should be referenced via in `environments/overlays/dev/kustomization.yaml`
+        - In a similar fashion, it is easy to support deploying only a subset of components to an environment. For example, only 'componentA' or 'componentB'.
+    - An environment may also contain zero or more Kubernetes resources (eg Deployments/ConfigMaps/etc) that should be deployed within a particular environment. (These would be resources that are not tied to a specific component, but still need to be present. For example, a `ResourceQuota` in a namespace)
 
 
 ## Primary Kustomize Entrypoints
@@ -36,9 +35,8 @@ There are two types of resources defined in this repository:
 The full contents of the GitOps repository can be generated by calling `kustomize build` on the _environment_ to deploy.
 
 For example:
-- `kustomize build environments/overlays/dev`: To generate the environment dev K8s resources, including all services (eg service A, service B, etc), and environment-specific resources
-- `kustomize build environments/overlays/staging`: To generate the environment staging K8s resources, including all services (eg service A, service B, etc), and environment-specific resources
-
+- `kustomize build environments/overlays/dev`: To generate the environment dev K8s resources, including all referenced components (eg component A/B/...), and environment-specific resources
+- `kustomize build environments/overlays/staging`: To generate the environment staging K8s resources, including all referenced components (eg component A/B/...), and environment-specific resources
 
 
 ## Tree Diagram
@@ -56,8 +54,8 @@ Here is the hierarchy of resources within the repository:
 │       │   └── kustomization.yaml
 │       └── staging
 │           └── kustomization.yaml
-└── services
-    ├── serviceA
+└── component
+    ├── componentA
     │   ├── base
     │   │   ├── deployment-sample-workload.yaml
     │   │   ├── kustomization.yaml
@@ -68,7 +66,7 @@ Here is the hierarchy of resources within the repository:
     │       │   └── kustomization.yaml
     │       └── staging
     │           └── kustomization.yaml
-    └── serviceB
+    └── componentB
         ├── base
         │   ├── deployment-sample-workload.yaml
         │   ├── kustomization.yaml
@@ -101,12 +99,12 @@ kustomize build environments/overlays/dev
 # Apply the resources (then wait a moment)
 kustomize build environments/overlays/dev | kubectl apply -n my-environment -f -
 
-# Retrieve the routes of the services
+# Retrieve the routes of the components
 kubectl get routes
 
 # You should now be able to access the Route, and see the environments variables output by that Route:
 # example:
-# https://service-a-my-environment.apps.(cluster hostname).openshift.com/env
+# https://component-a-my-environment.apps.(cluster hostname).openshift.com/env
 # should contain:
 # ANOTHER_ENV_VAR: another-value
 # ENV_VAR_FROM_CONFIG_MAP: dev
@@ -128,12 +126,12 @@ kustomize build environments/overlays/staging
 # Apply the resources (then wait a moment)
 kustomize build environments/overlays/staging | kubectl apply -n my-environment -f -
 
-# Retrieve the routes of the services
+# Retrieve the routes of the components
 kubectl get routes
 
 # You should now be able to access the Route, and see the environments variables output by that Route:
 # example:
-# https://service-a-my-environment.apps.(cluster hostname).openshift.com/env
+# https://component-a-my-environment.apps.(cluster hostname).openshift.com/env
 # should contain:
 # ANOTHER_ENV_VAR: another-value
 # ENV_VAR_FROM_CONFIG_MAP: staging

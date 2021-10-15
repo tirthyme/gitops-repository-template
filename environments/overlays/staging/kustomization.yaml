@@ -1,7 +1,7 @@
 resources:
 - ../../base
-- ../../../services/serviceA/overlays/staging
-- ../../../services/serviceB/overlays/staging
+- ../../../components/componentA/overlays/staging
+- ../../../components/componentB/overlays/staging
 # - (additional resources that will only be applied in this environment)
 
 # patches to resources in this environment
