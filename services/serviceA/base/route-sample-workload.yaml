@@ -1,12 +1,12 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: sample-workload
+  name: service-a
 spec:
-  subdomain: sample-workload
+  subdomain: service-a
   to:
     kind: Service
-    name: sample-workload
+    name: service-a
     weight: 100
   port:
     targetPort: 8080

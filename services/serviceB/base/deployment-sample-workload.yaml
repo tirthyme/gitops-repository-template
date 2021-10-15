@@ -1,25 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-workload
+  name: service-b
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: sample-workload
+      app.kubernetes.io/name: service-b
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: sample-workload
+        app.kubernetes.io/name: service-b
     spec:
       containers:
-      - name: sample-workload
+      - name: service-b
         image: quay.io/jgwest-redhat/sample-workload:latest
         imagePullPolicy: Always
 #        command:
 #        - entrypoint.sh
-#        - argocd-repo-server
-#        - --redis
-#        - $(ARGOCD_REDIS_SERVICE):6379
         env:
           - name: ENV_VAR_FROM_CONFIG_MAP
             valueFrom:
