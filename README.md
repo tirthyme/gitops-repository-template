@@ -54,7 +54,7 @@ Here is the hierarchy of resources within the repository:
 │       │   └── kustomization.yaml
 │       └── staging
 │           └── kustomization.yaml
-└── component
+└── components
     ├── componentA
     │   ├── base
     │   │   ├── deployment-sample-workload.yaml
