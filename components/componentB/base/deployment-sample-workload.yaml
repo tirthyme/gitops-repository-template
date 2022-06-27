@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: component-b
-        image: quay.io/jgwest-redhat/sample-workload:latest
+        image: quay.io/jgwest-redhat/sample-workload1:latest
         imagePullPolicy: Always
 #        command:
 #        - entrypoint.sh
